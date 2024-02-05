@@ -60,7 +60,7 @@ call_neo4j <- function(query, con,
 
   # Calling the API
   res <- POST(
-    url = glue("{con$url}/db/data/transaction/commit?includeStats=true"),
+    url = glue("{con$url}/db/{con$db}/tx/commit?includeStats=true"),
     add_headers(.headers = c(
       "Content-Type" = "application/json",
       "accept" = "application/json",

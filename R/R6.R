@@ -31,7 +31,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' con <- neo4j_api$new(url = "http://localhost:7474", user = "neo4j", password = "password")
+#' con <- neo4j_api$new(url = "http://localhost:7474", db = "neo4j", user = "neo4j", password = "password")
 #' }
 #'
 #'
@@ -42,6 +42,7 @@ neo4j_api <- R6::R6Class(
   ),
   public = list(
     url = character(0),
+    db = character(0),
     user = character(0),
     relationships = data.frame(0),
     auth = character(0),
@@ -50,6 +51,7 @@ neo4j_api <- R6::R6Class(
       cat("<neo4j connection object>\n")
       if (self$ping() == 200) {
         cat("Connected at", self$url, "\n")
+        cat("Connected to DB", self$db, "\n")
         cat("User:", self$user, "\n")
         cat("Neo4j version:", self$get_version(), "\n")
       } else {
@@ -57,7 +59,7 @@ neo4j_api <- R6::R6Class(
         cat("(Wrong credentials or hostname)\n")
       }
     },
-    initialize = function(url, user, password) {
+    initialize = function(url, db, user, password) {
       # browser()
       # Clean url in case it ends with a /
       if (grepl("bolt", url)) {
@@ -71,6 +73,7 @@ neo4j_api <- R6::R6Class(
       }
       url <- gsub("(.*)/$", "\\1", url)
       self$url <- url
+      self$db <- db
       self$user <- user
       private$password <- password
       self$auth <- base64_enc(paste0(user, ":", password))
